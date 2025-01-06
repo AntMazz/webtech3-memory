@@ -50,6 +50,30 @@
 
 <div id="game-board"></div>
 
+<p id="result"></p>
+
 <script type="module" src="js/main.js"></script>
+<script>
+    const checkConnection = () => {
+        fetch('http://localhost:8000/frontend')
+            .then(resp => resp.json())
+            .then(json => {
+                console.log(json);
+                let datum = new Date(json['date']).toLocaleDateString('NL-nl', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                document.getElementById('result').innerHTML = json['message'];
+                document.getElementById('result').innerHTML += `<br/>De huidige datum is ${datum}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = 'Er is een fout opgetreden bij het verbinden met de backend.';
+            });
+    };
+
+    document.getElementById('start-game').addEventListener('click', () => {
+        checkConnection();
+    });
+
+    checkConnection();
+</script>
 </body>
 </html>
