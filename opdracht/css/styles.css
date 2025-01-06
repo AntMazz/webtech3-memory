@@ -1,0 +1,57 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+#game-board {
+    display: grid;
+    grid-gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.card {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    background-size: cover;
+    color: transparent;
+    cursor: pointer;
+}
+
+.card.closed {
+    color: black;
+    background-color: var(--closed-card-color, #999);
+}
+
+.card.open {
+    color: black;
+    background-color: var(--open-card-color, lightblue);
+}
+
+.card.found {
+    color: black;
+    background-color: var(--found-card-color, lightgreen);
+}
+
+#game-settings {
+    margin-bottom: 20px;
+}
+
+input[type="color"] {
+    width: 50px;
+    height: 30px;
+}
+
+#timer-container {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+#timer-container p {
+    margin: 5px 0;
+}

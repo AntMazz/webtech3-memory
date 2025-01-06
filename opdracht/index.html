@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<h1>Memory Game</h1>
+<div id="game-settings">
+    <label for="image-type">Afbeeldingstype:</label>
+    <select id="image-type">
+        <option value="dog">Honden</option>
+        <option value="cat">Katten</option>
+        <option value="picsum">Random Afbeeldingen</option>
+    </select>
+
+    <label for="board-size">Bordgrootte:</label>
+    <select id="board-size">
+        <option value="4x4">4x4</option>
+        <option value="6x6" selected>6x6</option>
+        <option value="8x8">8x8</option>
+    </select>
+
+    <label for="card-back-symbol">Symbool achterkant:</label>
+    <select id="card-back-symbol">
+        <option value="@">@</option>
+        <option value="#">#</option>
+        <option value="$">$</option>
+        <option value="&">&</option>
+    </select>
+
+    <label for="closed-card-color">Kleur gesloten kaarten:</label>
+    <input type="color" id="closed-card-color" value="#999">
+
+    <label for="open-card-color">Kleur open kaarten:</label>
+    <input type="color" id="open-card-color" value="#ADD8E6">
+
+    <label for="found-card-color">Kleur gevonden kaarten:</label>
+    <input type="color" id="found-card-color" value="#90EE90">
+
+    <button id="start-game">Start Spel</button>
+</div>
+
+<div id="timer-container">
+    <p>Verstreken tijd: <span id="elapsed-time">0s</span></p>
+    <p>Resterende tijd: <span id="remaining-time">60s</span></p>
+</div>
+
+<div id="game-board"></div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
