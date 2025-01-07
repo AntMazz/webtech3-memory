@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preferences</title>
+</head>
+<body>
+<h1>Preferences</h1>
+<form id="preferences-form">
+    <label for="image-type">Favorite Image API:</label>
+    <select id="image-type">
+        <option value="dog">Dog</option>
+        <option value="cat">Cat</option>
+    </select>
+    <label for="closed-card-color">Closed Card Color:</label>
+    <input type="color" id="closed-card-color" value="#999">
+    <label for="found-card-color">Found Card Color:</label>
+    <input type="color" id="found-card-color" value="#90EE90">
+    <label for="email">Email:</label>
+    <input type="email" id="email" required>
+    <button type="submit">Save Preferences</button>
+</form>
+<p id="preferences-result"></p>
+<script>
+    document.getElementById('preferences-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const imageType = document.getElementById('image-type').value;
+        const closedCardColor = document.getElementById('closed-card-color').value;
+        const foundCardColor = document.getElementById('found-card-color').value;
+        const email = document.getElementById('email').value;
+        const token = localStorage.getItem('jwt');
+
+        fetch('http://localhost:8000/api/player/preferences', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ imageType, closedCardColor, foundCardColor, email })
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('preferences-result').textContent = data.message || 'Preferences saved!';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('preferences-result').textContent = 'Failed to save preferences.';
+            });
+    });
+</script>
+<script src="js/fetchOverride.js"></script>
+</body>
+</html>

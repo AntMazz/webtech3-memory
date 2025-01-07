@@ -8,12 +8,14 @@
 </head>
 <body>
 <h1>Memory Game</h1>
+
+<!-- Game Settings -->
 <div id="game-settings">
     <label for="image-type">Afbeeldingstype:</label>
     <select id="image-type">
-        <option value="dog">Honden</option>
         <option value="cat">Katten</option>
         <option value="picsum">Random Afbeeldingen</option>
+        <option value="dog">Honden</option>
     </select>
 
     <label for="board-size">Bordgrootte:</label>
@@ -43,15 +45,24 @@
     <button id="start-game">Start Spel</button>
 </div>
 
+<!-- Timer -->
 <div id="timer-container">
     <p>Verstreken tijd: <span id="elapsed-time">0s</span></p>
     <p>Resterende tijd: <span id="remaining-time">60s</span></p>
 </div>
 
+<!-- Top 5 Scores -->
+<div id="top-scores">
+    <h2>Top 5 Scores</h2>
+    <ul id="score-list"></ul>
+</div>
+
+<!-- Game Board -->
 <div id="game-board"></div>
 
 <p id="result"></p>
 
+<!-- Scripts -->
 <script type="module" src="js/main.js"></script>
 <script>
     const checkConnection = () => {
@@ -69,11 +80,44 @@
             });
     };
 
+    const fetchTopScores = () => {
+        const token = localStorage.getItem('jwt');
+        if (!token) {
+            alert('Je bent niet ingelogd. Je wordt doorgestuurd naar de loginpagina.');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        fetch('http://localhost:8000/scores', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(response => response.json())
+            .then(scores => {
+                const scoreList = document.getElementById('score-list');
+                scoreList.innerHTML = ''; // Clear existing scores
+                scores.slice(0, 5).forEach(score => {
+                    const li = document.createElement('li');
+                    li.textContent = `${score.username}: ${score.score}`;
+                    scoreList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching top scores:', error);
+                document.getElementById('score-list').innerHTML = '<li>Kan scores niet laden.</li>';
+            });
+    };
+
     document.getElementById('start-game').addEventListener('click', () => {
         checkConnection();
+        fetchTopScores();
     });
 
+    // Initial checks
     checkConnection();
+    fetchTopScores();
 </script>
+<script src="js/fetchOverride.js"></script>
 </body>
 </html>
