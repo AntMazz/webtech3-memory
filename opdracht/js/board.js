@@ -145,11 +145,8 @@ function setupTimer() {
         // Als de tijd op is, stop de timer en toon een bericht
         if (remainingTime <= 0) {
             clearInterval(timerInterval);
-            alert("Tijd is om!"); // Als de tijd op is, stop het spel
+            alert("Tijd is om!"); // Als de tijd op is stop het spel
         }
     }, 1000);
 }
 
-export function stopTimer() {
-    clearInterval(timerInterval); // Functie om de timer handmatig te stoppen
-}
