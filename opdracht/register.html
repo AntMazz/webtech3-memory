@@ -21,9 +21,6 @@
     <button type="submit">Registreer</button>
 </form>
 
-<div id="error-message" style="color: red;"></div>
-<div id="success-message" style="color: green;"></div>
-
 <script>
     document.getElementById('register-form').addEventListener('submit', async function (event) {
         event.preventDefault();
@@ -40,8 +37,8 @@
             password: password
         };
 
-        // Voer de registratie uit via een POST-aanroep naar de API
         try {
+            // Voer de registratie uit via een POST-aanroep naar de API
             const response = await fetch('http://localhost:8000/register', {
                 method: 'POST',
                 headers: {
@@ -50,32 +47,33 @@
                 body: JSON.stringify(data)
             });
 
-            // Controleer of het antwoord geldig JSON is
+            const responseText = await response.text(); // Lees de respons als tekst
+            console.log("Response Status:", response.status);
+            console.log("Response Text:", responseText);
+
             if (response.ok) {
-                const textResponse = await response.text();  // Haal de respons als tekst op
-                const result = textResponse ? JSON.parse(textResponse) : {};  // Parse alleen als er iets is om te parseren
+               try {
+                    const result = responseText ? JSON.parse(responseText) : {};
+                    console.log("Parsed JSON:", result);
 
-                // Als er een message in het antwoord staat, toon dat dan als succesbericht
-                if (result.message) {
-                    document.getElementById('success-message').textContent = result.message;
-
-                    // Redirect naar de loginpagina na succesvolle registratie
-                    setTimeout(() => {
-                        window.location.href = '/login';  // Pas de URL aan naar jouw loginpagina
-                    }, 2000);  // Vertraag de redirect zodat de gebruiker het succesbericht kan zien
-                } else {
-                    document.getElementById('error-message').textContent = 'Er is een fout opgetreden bij het registreren.';
+                    // Redirect direct naar de loginpagina
+                    window.location.href = 'http://localhost:63342/opdracht/login.html';
+                } catch (e) {
+                    console.error("JSON Parse Error:", e);
+                    alert("Registratie voltooid, maar er was een probleem met de response. Redirecting...");
+                    window.location.href = 'http://localhost:63342/opdracht/login.html';
                 }
             } else {
-                const error = await response.text();
-                document.getElementById('error-message').textContent = error || 'Er is een fout opgetreden bij het registreren.';
+                // Als er een fout is opgetreden bij de registratie
+                console.error("API Error Response:", responseText);
+                alert("Er is een fout opgetreden bij het registreren. Controleer uw gegevens en probeer opnieuw.");
             }
         } catch (error) {
-            // Als er een netwerkfout of andere onverwachte fout optreedt
-            document.getElementById('error-message').textContent = 'Er is een fout opgetreden bij de aanvraag: ' + error.message;
+            // Als er een onverwachte fout optreedt
+            console.error("Network Error:", error);
+            alert("Er is een netwerkfout opgetreden. Probeer het later opnieuw.");
         }
     });
 </script>
-
 </body>
 </html>
