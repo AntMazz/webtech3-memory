@@ -16,7 +16,15 @@
 </form>
 <p id="login-result"></p>
 <script>
-    document.getElementById('login-form').addEventListener('submit', function(event) {
+    // Helperfunctie om een JWT-token te decoderen
+    function decodeJwt(token) {
+        const payloadBase64 = token.split('.')[1]; // Haal payload (2e deel) van JWT
+        const payload = atob(payloadBase64); // Decodeer van Base64
+        return JSON.parse(payload); // Parse naar object
+    }
+
+    // Login formulier handler
+    document.getElementById('login-form').addEventListener('submit', function (event) {
         event.preventDefault();
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
@@ -24,31 +32,33 @@
         fetch('http://localhost:8000/api/login_check', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username: username, password: password })
+            body: JSON.stringify({ username, password }),
         })
-            .then(response => {
-                if (!response.ok) {
-                    return response.text().then(text => {
-                        throw new Error(`Login failed: ${response.status} ${text}`);
-                    });
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
-                console.log('Response data:', data); // Debug
                 if (data.token) {
+                    const jwtPayload = decodeJwt(data.token); // Decode de JWT-token
+                    const playerId = jwtPayload.sub; // Haal de speler-ID op
+                    const playerName = jwtPayload.username || username; // Gebruik username als fallback
+
+                    // Sla gegevens op in localStorage
                     localStorage.setItem('jwt', data.token);
+                    localStorage.setItem('playerId', playerId);
+                    localStorage.setItem('playerName', playerName);
+
+                    // Redirect naar de gamepagina
                     document.getElementById('login-result').textContent = 'Login successful!';
-                    window.location.href = 'index.html'; // Redirect to the game page
+                    window.location.href = 'index.html';
                 } else {
                     document.getElementById('login-result').textContent = 'Login failed.';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                document.getElementById('login-result').textContent = 'Login failed. Check console for details.';
+                document.getElementById('login-result').textContent =
+                    'Login failed. Check console for details.';
             });
     });
 </script>

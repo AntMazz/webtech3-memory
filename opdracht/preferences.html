@@ -7,6 +7,8 @@
 </head>
 <body>
 <h1>Preferences</h1>
+
+<!-- Preferences Form -->
 <form id="preferences-form">
     <label for="image-type">Favorite Image API:</label>
     <select id="image-type">
@@ -20,52 +22,71 @@
     <label for="found-card-color">Found Card Color:</label>
     <input type="color" id="found-card-color" value="#90EE90">
     <br>
-    <label for="email">Email:</label>
-    <input type="email" id="email" required>
     <button type="submit">Save Preferences</button>
 </form>
 <p id="preferences-result"></p>
 
+<!-- Email Change Form -->
 <form id="email-form">
     <h2>Change Email</h2>
     <label for="new-email">New Email:</label>
     <input type="email" id="new-email" required>
+    <br>
     <button type="submit">Change Email</button>
 </form>
 <p id="email-result"></p>
 
+<!-- Back to Index Button -->
+<button onclick="window.location.href='index.html'">Back to Index</button>
+
 <script>
-    document.getElementById('preferences-form').addEventListener('submit', function(event) {
+    const playerId = localStorage.getItem('playerId'); // Zorg dat deze is ingesteld na login
+    const token = localStorage.getItem('jwt');
+
+    // Handle saving preferences
+    document.getElementById('preferences-form').addEventListener('submit', function (event) {
         event.preventDefault();
+
         const imageType = document.getElementById('image-type').value;
         const closedCardColor = document.getElementById('closed-card-color').value;
         const foundCardColor = document.getElementById('found-card-color').value;
-        const email = document.getElementById('email').value;
-        const token = localStorage.getItem('jwt');
 
-        fetch('http://localhost:8000/api/player/preferences', {
+        if (!playerId) {
+            document.getElementById('preferences-result').textContent = 'Player ID is not available. Please log in again.';
+            return;
+        }
+
+        fetch(`http://localhost:8000/api/player/${playerId}/preferences`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ imageType, closedCardColor, foundCardColor, email })
+            body: JSON.stringify({ imageType, closedCardColor, foundCardColor })
         })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('preferences-result').textContent = data.message || 'Preferences saved!';
+            .then(response => response.text())  // Get the raw response as text
+            .then(text => {
+                console.log('Raw response:', text);  // Log the raw response for debugging
+                try {
+                    const data = JSON.parse(text);  // Try parsing it as JSON
+                    console.log('Parsed JSON:', data);  // Log the parsed JSON data
+                    document.getElementById('preferences-result').textContent = 'Preferences saved successfully!';
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);  // Log any parsing errors
+                    document.getElementById('preferences-result').textContent = 'Failed to parse response. Please try again.';
+                }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Error:', error);  // Log any network errors
                 document.getElementById('preferences-result').textContent = 'Failed to save preferences.';
             });
     });
 
-    document.getElementById('email-form').addEventListener('submit', function(event) {
+    // Handle changing email
+    document.getElementById('email-form').addEventListener('submit', function (event) {
         event.preventDefault();
+
         const newEmail = document.getElementById('new-email').value;
-        const token = localStorage.getItem('jwt');
-        const playerId = localStorage.getItem('playerId'); // Zorg ervoor dat de ID ergens is opgeslagen na login
 
         if (!playerId) {
             document.getElementById('email-result').textContent = 'Player ID is not available. Please log in again.';
@@ -80,21 +101,24 @@
             },
             body: JSON.stringify({ email: newEmail })
         })
-            .then(response => {
-                if (response.status === 204) {
+            .then(response => response.text())  // Get the raw response as text
+            .then(text => {
+                console.log('Raw response:', text);  // Log the raw response for debugging
+                try {
+                    const data = JSON.parse(text);  // Try parsing it as JSON
+                    console.log('Parsed JSON:', data);  // Log the parsed JSON data
                     document.getElementById('email-result').textContent = 'Email updated successfully!';
-                } else {
-                    return response.json().then(data => {
-                        throw new Error(data.message || 'Failed to update email.');
-                    });
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);  // Log any parsing errors
+                    document.getElementById('email-result').textContent = 'Failed to parse response. Please try again.';
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('email-result').textContent = error.message || 'Failed to update email.';
+                console.error('Error:', error);  // Log any network errors
+                document.getElementById('email-result').textContent = 'Failed to update email.';
             });
     });
 </script>
-<script src="js/fetchOverride.js"></script>
+
 </body>
 </html>
