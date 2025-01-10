@@ -26,7 +26,7 @@ export async function setupBoard(imageType, boardSize, cardBackSymbol) {
         const card = document.createElement('div');
         card.classList.add('card', 'closed');
         card.textContent = cardBackSymbol; // Symbool op de achterkant
-        card.setAttribute('data-content', content); // De echte inhoud van de kaart
+        card.setAttribute('data-content', content);
 
         card.addEventListener('click', () => handleCardClick(card));
 
@@ -47,14 +47,14 @@ function handleCardClick(card) {
     const content = card.getAttribute('data-content');
 
     if (content.startsWith('url(')) {
-        card.style.backgroundImage = content; // Zet afbeelding op de kaart
+        card.style.backgroundImage = content;
     } else {
         card.textContent = ''; // Verwijder het symbool van de achterkant als er een afbeelding is
     }
 
     openedCards.push(card);
 
-    // Als er twee kaarten open zijn, controleer of ze overeenkomen
+    // Als er twee kaarten open zijn controleer of ze overeenkomen
     if (openedCards.length === 2) {
         checkMatch();
     }
@@ -63,7 +63,7 @@ function handleCardClick(card) {
 function checkMatch() {
     const [firstCard, secondCard] = openedCards;
 
-    // Vergelijk de data-content van de twee kaarten
+    // Vergelijk de content van de twee kaarten
     if (firstCard.getAttribute('data-content') === secondCard.getAttribute('data-content')) {
         // Als ze overeenkomen, markeer ze als gevonden
         firstCard.classList.add('found');
@@ -72,10 +72,10 @@ function checkMatch() {
 
         // Controleer of alle paren zijn gevonden
         if (foundPairs === totalPairs) {
-            endGame(); // Als alle paren zijn gevonden, beëindig het spel
+            endGame();
         }
     } else {
-        // Als ze niet overeenkomen, draai de kaarten terug na een korte vertraging
+        // Als ze niet overeenkomen draai de kaarten terug
         setTimeout(() => {
             firstCard.classList.remove('open');
             secondCard.classList.remove('open');
@@ -142,10 +142,10 @@ function setupTimer() {
         elapsedTimeElement.textContent = `${elapsedTime}s`;
         remainingTimeElement.textContent = `${remainingTime}s`;
 
-        // Als de tijd op is, stop de timer en toon een bericht
+        // Als de tijd op is stop de timer en toon een bericht
         if (remainingTime <= 0) {
             clearInterval(timerInterval);
-            alert("Tijd is om!"); // Als de tijd op is stop het spel
+            alert("Tijd is om!");
         }
     }, 1000);
 }

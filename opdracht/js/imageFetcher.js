@@ -16,9 +16,9 @@ export function fetchImage(imageType) {
             console.log(`Response data for ${imageType}:`, data);
 
             if (imageType === 'dog') {
-                return data.message; // Dog API retourneert een lijst van image URLs
+                return data.message;
             } else if (imageType === 'cat') {
-                return data.map(item => item.url); // Cat API retourneert een lijst van image URLs
+                return data.map(item => item.url);
             }
         })
         .catch(err => {

@@ -43,6 +43,7 @@
     <input type="color" id="found-card-color" value="#90EE90">
 
     <button id="start-game">Start Spel</button>
+    <button id="preferences-button">Preferences</button> <!-- Nieuwe knop toegevoegd -->
 </div>
 
 <!-- Timer -->
@@ -112,6 +113,10 @@
     document.getElementById('start-game').addEventListener('click', () => {
         checkConnection();
         fetchTopScores();
+    });
+
+    document.getElementById('preferences-button').addEventListener('click', () => {
+        window.location.href = 'preferences.html'; // Redirect naar preferences.html
     });
 
     // Initial checks
