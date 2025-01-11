@@ -40,7 +40,7 @@
 <button onclick="window.location.href='index.html'">Back to Index</button>
 
 <script>
-    const playerId = localStorage.getItem('playerId'); // Zorg dat deze is ingesteld na login
+    const playerId = localStorage.getItem('playerId'); // Ensure this is set after login
     const token = localStorage.getItem('jwt');
 
     // Handle saving preferences
@@ -101,21 +101,20 @@
             },
             body: JSON.stringify({ email: newEmail })
         })
-            .then(response => response.text())  // Get the raw response as text
-            .then(text => {
-                console.log('Raw response:', text);  // Log the raw response for debugging
-                try {
-                    const data = JSON.parse(text);  // Try parsing it as JSON
-                    console.log('Parsed JSON:', data);  // Log the parsed JSON data
+            .then(response => {
+                if (response.status === 204) {
                     document.getElementById('email-result').textContent = 'Email updated successfully!';
-                } catch (error) {
-                    console.error('Error parsing JSON:', error);  // Log any parsing errors
-                    document.getElementById('email-result').textContent = 'Failed to parse response. Please try again.';
+                } else {
+                    return response.text().then(text => {
+                        // If there's some error text from the server
+                        console.error('Error:', text);
+                        document.getElementById('email-result').textContent = 'Failed to update email. Please try again.';
+                    });
                 }
             })
             .catch(error => {
-                console.error('Error:', error);  // Log any network errors
-                document.getElementById('email-result').textContent = 'Failed to update email.';
+                console.error('Error:', error);
+                document.getElementById('email-result').textContent = 'Failed to update email. Please try again.';
             });
     });
 </script>

@@ -15,6 +15,15 @@
 <!-- Logout Button -->
 <button id="logout-button">Logout</button> <!-- Logout knop onder de Gebruiker ID -->
 
+<!-- Email Change Section -->
+<div id="email-change-section">
+    <h2>Change Email</h2>
+    <label for="new-email">Nieuwe Email:</label>
+    <input type="email" id="new-email" required>
+    <button id="change-email-button">Change Email</button>
+    <p id="email-change-result"></p>
+</div>
+
 <!-- Game Settings -->
 <div id="game-settings">
     <label for="image-type">Afbeeldingstype:</label>
@@ -49,7 +58,6 @@
     <input type="color" id="found-card-color" value="#90EE90">
 
     <button id="start-game">Start Spel</button>
-    <button id="preferences-button">Preferences</button> <!-- Nieuwe knop toegevoegd -->
 </div>
 
 <!-- Timer -->
@@ -124,8 +132,38 @@
         checkConnection();
     });
 
-    document.getElementById('preferences-button').addEventListener('click', () => {
-        window.location.href = 'preferences.html'; // Redirect naar preferences.html
+    // Email wijziging
+    document.getElementById('change-email-button').addEventListener('click', () => {
+        const newEmail = document.getElementById('new-email').value;
+        const userId = document.getElementById('user-id').textContent.trim();
+
+        if (!userId || !newEmail) {
+            document.getElementById('email-change-result').textContent = 'Vul een geldige email in en zorg ervoor dat je ingelogd bent.';
+            return;
+        }
+
+        fetch(`http://localhost:8000/api/player/${userId}/email`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ email: newEmail })
+        })
+            .then(response => {
+                if (response.status === 204) {
+                    document.getElementById('email-change-result').textContent = 'Email is succesvol gewijzigd!';
+                } else {
+                    response.text().then(text => {
+                        document.getElementById('email-change-result').textContent = 'Fout bij het wijzigen van de email.';
+                        console.error(text);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('email-change-result').textContent = 'Er is een fout opgetreden bij het wijzigen van de email.';
+            });
     });
 
     // Logout functie
