@@ -58,12 +58,6 @@
     <p>Resterende tijd: <span id="remaining-time">60s</span></p>
 </div>
 
-<!-- Top 5 Scores -->
-<div id="top-scores">
-    <h2>Top 5 Scores</h2>
-    <ul id="score-list"></ul>
-</div>
-
 <!-- Game Board -->
 <div id="game-board"></div>
 
@@ -124,39 +118,10 @@
             });
     };
 
-    // Functie om de top scores op te halen
-    const fetchTopScores = () => {
-        const token = localStorage.getItem('jwt');
-        if (!token) {
-            alert('Je bent niet ingelogd. Je wordt doorgestuurd naar de loginpagina.');
-            window.location.href = 'login.html';
-            return;
-        }
-
-        fetch('http://localhost:8000/scores', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then(response => response.json())
-            .then(scores => {
-                const scoreList = document.getElementById('score-list');
-                scoreList.innerHTML = ''; // Clear existing scores
-                scores.slice(0, 5).forEach(score => {
-                    const li = document.createElement('li');
-                    li.textContent = `${score.username}: ${score.score}`;
-                    scoreList.appendChild(li);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching top scores:', error);
-                document.getElementById('score-list').innerHTML = '<li>Kan scores niet laden.</li>';
-            });
-    };
+    // Verwijder de functie voor het ophalen van de top scores
 
     document.getElementById('start-game').addEventListener('click', () => {
         checkConnection();
-        fetchTopScores();
     });
 
     document.getElementById('preferences-button').addEventListener('click', () => {
@@ -172,7 +137,6 @@
 
     // Initial checks
     checkConnection();
-    fetchTopScores();
 </script>
 <script src="js/fetchOverride.js"></script>
 </body>
