@@ -55,3 +55,15 @@ input[type="color"] {
 #timer-container p {
     margin: 5px 0;
 }
+
+@media (max-width: 600px) {
+    .card {
+        width: 60px;
+        height: 60px;
+        font-size: 1.2rem;
+    }
+
+    #game-board {
+        grid-gap: 5px;
+    }
+}
