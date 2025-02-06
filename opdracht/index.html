@@ -12,6 +12,9 @@
 <!-- Display logged-in user ID -->
 <p>Ingelogde Gebruiker ID: <span id="user-id"></span></p>
 
+<!-- Login Button -->
+<button id="login-button">Login</button>
+
 <!-- Logout Button -->
 <button id="logout-button">Logout</button> <!-- Logout knop onder de Gebruiker ID -->
 
@@ -170,6 +173,11 @@
     document.getElementById('logout-button').addEventListener('click', () => {
         localStorage.removeItem('jwt'); // Verwijder de JWT-token uit localStorage
         alert('Je bent uitgelogd.');
+        window.location.href = 'login.html'; // Redirect naar de loginpagina
+    });
+
+    // Login functie
+    document.getElementById('login-button').addEventListener('click', () => {
         window.location.href = 'login.html'; // Redirect naar de loginpagina
     });
 

@@ -1,3 +1,4 @@
+// js/timer.js
 let timerInterval;
 let elapsedTime = 0;
 
@@ -5,9 +6,12 @@ export function setupTimer() {
     const elapsedTimeElement = document.getElementById('elapsed-time');
     const remainingTimeElement = document.getElementById('remaining-time');
 
-    let remainingTime = 60; // Starttijd van 60 seconden
+    let remainingTime = 60; // Ensure this is set to 30 seconds
 
-    // Update de tijd elke seconde
+    // Clear any existing interval to prevent multiple intervals
+    clearInterval(timerInterval);
+
+    // Update the time every second
     timerInterval = setInterval(() => {
         elapsedTime++;
         remainingTime--;
@@ -17,7 +21,7 @@ export function setupTimer() {
 
         if (remainingTime <= 0) {
             clearInterval(timerInterval);
-            alert("Tijd is om!");
+            alert("Time's up!");
         }
     }, 1000);
 }

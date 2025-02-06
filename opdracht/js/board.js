@@ -1,9 +1,9 @@
+// js/board.js
+import { setupTimer } from './timer.js';
+
 let openedCards = [];
 let foundPairs = 0;
 let totalPairs = 18; // Aantal paren in het spel
-let timerInterval;
-let elapsedTime = 0; // Houd de verstreken tijd bij
-let remainingTime = 60; // Starttijd van 60 seconden
 let gameEnded = false; // Vlag om te controleren of het spel is afgelopen
 
 export async function setupBoard(imageType, boardSize, cardBackSymbol) {
@@ -126,27 +126,3 @@ function shuffle(array) {
     }
     return array;
 }
-
-// Timer functies
-function setupTimer() {
-    const elapsedTimeElement = document.getElementById('elapsed-time');
-    const remainingTimeElement = document.getElementById('remaining-time');
-
-    // Update de tijd elke seconde
-    timerInterval = setInterval(() => {
-        if (gameEnded) return; // Stop de timer als het spel is afgelopen
-
-        elapsedTime++;
-        remainingTime--;
-
-        elapsedTimeElement.textContent = `${elapsedTime}s`;
-        remainingTimeElement.textContent = `${remainingTime}s`;
-
-        // Als de tijd op is stop de timer en toon een bericht
-        if (remainingTime <= 0) {
-            clearInterval(timerInterval);
-            alert("Tijd is om!");
-        }
-    }, 1000);
-}
-
